@@ -56,7 +56,8 @@
 
       // Load in the mesh and add it to the scene.
       var loader = new THREE.JSONLoader();
-      loader.load( "models/android.js", function(geometry){
+     // loader.load( "models/android.js", function(geometry){
+	  loader.load( "models/ufo.json", function(geometry){
         var material = new THREE.MeshLambertMaterial({color: 0x55B663});
         mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
