@@ -61,8 +61,9 @@
       // Load in the mesh and add it to the scene.
       var loader = new THREE.JSONLoader();
       loader.load( "models/dumbell3285consistent.json", function(geometry){
-        var material = new THREE.MeshLambertMaterial({color: 0x3399ff});		
+        var material = new THREE.MeshPhongMaterial({color: 0x3399ff, shading: THREE.SmoothShading});		
         mesh = new THREE.Mesh(geometry, material);
+		mesh.geometry.computeVertexNormals();
         scene.add(mesh);
       });
 
