@@ -5,10 +5,17 @@
 
 	<head>
 	 <title> mesh loader</title>
+	 
+	 <style>
+	 
+	 body{
+	 background: linear-gradient(rgb(81,87,110), white);
+	 }
+	 </style>
 	</head>
 	
 	<body>
-		<script src="js/three.min.js"></script>
+		<script src="js/three.js"></script>
   <script src="js/OrbitControls.js"></script>
 
   <script>
@@ -28,7 +35,8 @@
           HEIGHT = window.innerHeight;
 
       // Create a renderer and add it to the DOM.
-      renderer = new THREE.WebGLRenderer({antialias:true});
+      renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+	 // renderer.setClearAlpha(0.1);
       renderer.setSize(WIDTH, HEIGHT);
       document.body.appendChild(renderer.domElement);
 
@@ -47,7 +55,7 @@
       });
 
       // Set the background color of the scene.
-      renderer.setClearColor(0x333F47, 1);
+     // renderer.setClearColor(0x333F47, 1);
 
       // Create a light, set its position, and add it to the scene.
       var light = new THREE.PointLight(0xffffff);
