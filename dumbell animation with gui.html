@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title> dumbell animation</title>
+		<script src="js/three.js"></script>
+		<script src="js/OrbitControls.js"></script>
+		<script src="js/triangulation1284.js"></script>
+		
+		<script type='text/javascript' src='js/DAT.GUI.min.js'></script>
+    <style>
+	body
+	{
+	 background: linear-gradient(rgb(81,87,110), white);
+	}
+    </style>
+</head>
+<body>
+
+<script>
+// Set up the scene, camera, and renderer as global variables
+    var scene, camera, renderer;
+	var mesh; // treba globalne aby bola vidiet v anime
+	var drawCount=0,num_faces, id;
+	var speedAnimation = 10;
+	var speedAnimationGUI=6,stopAnimationGUI=100000;
+	const MESH_WAIT=200;
+	var wait=MESH_WAIT;
+	
+    init();
+	<!-- console.log("start cakania"); -->
+		<!-- setTimeout(emptyFun,40000); -->
+
+    animate();
+
+    // Sets up the scene.
+    function init() {
+
+      // Create the scene and set the scene size.
+      scene = new THREE.Scene();
+      var WIDTH = window.innerWidth,
+          HEIGHT = window.innerHeight;
+
+      // Create a renderer and add it to the DOM.
+      renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+	 // renderer.setClearAlpha(0.1);
+      renderer.setSize(WIDTH, HEIGHT);
+      document.body.appendChild(renderer.domElement);
+
+      // Create a camera, zoom it out from the model a bit, and add it to the scene.
+      camera = new THREE.PerspectiveCamera(75, WIDTH / HEIGHT, 0.1, 2000);
+      //camera.position.set(0,0,3)
+	  camera.position.set(3,10,10)
+      scene.add(camera);
+
+      // Create an event listener that resizes the renderer with the browser window.
+      window.addEventListener('resize', function() {
+        var WIDTH = window.innerWidth,
+            HEIGHT = window.innerHeight;
+        renderer.setSize(WIDTH, HEIGHT);
+        camera.aspect = WIDTH / HEIGHT;
+        camera.updateProjectionMatrix();
+      });
+	  
+
+
+      // Set the background color of the scene.
+     // renderer.setClearColor(0x333F47, 1);
+
+      // Create a light, set its position, and add it to the scene.
+      <!-- var light = new THREE.PointLight(0xffffff); -->
+      <!-- light.position.set(-100,200,100); -->
+      <!-- scene.add(light); -->
+	  
+	  // LIGHTS based on https://threejs.org/examples/webgl_lights_hemisphere.html
+
+				hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
+				hemiLight.color.setHSL( 0.6, 1, 0.6 );
+				hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
+				hemiLight.position.set(10,10,10 );
+				scene.add( hemiLight );
+				
+				dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
+				dirLight.color.setHSL( 0.1, 1, 0.95 );
+				dirLight.position.set( -1, 1.75, 1 );
+				dirLight.position.multiplyScalar( 50 );
+				scene.add( dirLight );
+				
+								dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
+				dirLight.color.setHSL( 0,0,0.2 );
+				dirLight.position.set( 1, -1.75,- 1 );
+				dirLight.position.multiplyScalar( 10 );
+				scene.add( dirLight );
+	  
+	  // 
+	  //var light = new THREE.AmbientLight( 0x404040 ); // soft white light
+	  //scene.add( light );
+	  
+	  
+	  // ***************** trojuholnik test *******************
+	  
+	  
+
+	  // ***************** trojuholnik test *******************
+	  
+	  
+	  var geometry2 = new THREE.BufferGeometry();
+
+
+//var vertices = new Float32Array( [
+<!-- var vertices = new Int8Array( [ -->
+<!-- 0,0,0, -->
+<!-- 1,0,0, -->
+<!-- 1,1,0, -->
+<!-- 0,1,0, -->
+<!-- 0,0,1, -->
+<!-- 1,0,1, -->
+<!-- 1,1,1, -->
+<!-- 0,1,1 -->
+<!-- ] ); -->
+
+
+
+<!-- var faces = new Int8Array([ -->
+<!-- 0,1,2, -->
+<!-- 0,2,3, -->
+<!-- 5,1,0, -->
+<!-- 5,0,4, -->
+<!-- 4,5,6, -->
+<!-- 4,6,7, -->
+<!-- 4,0,3, -->
+<!-- 4,3,7, -->
+<!-- 6,2,3, -->
+<!-- 6,3,7, -->
+<!-- 5,1,2, -->
+<!-- 5,2,6 -->
+<!-- ]) -->
+		num_faces = faces.length/3;
+console.log("num_faces = "+num_faces);
+
+<!-- var normals = new Int8Array([ -->
+
+<!-- ]) -->
+
+
+// itemSize = 3 because there are 3 values (components) per vertex
+	geometry2.addAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+//geometry2.addAttribute( 'normal', new THREE.BufferAttribute( normals, 3 ) ); // funguje ked mas normaly
+//geometry2.addAttribute( 'color', new THREE.BufferAttribute( colors, 3 ) );
+
+	geometry2.setIndex( new THREE.BufferAttribute(faces,1));	
+	geometry2.setDrawRange(0,drawCount); //drawCount= 3 zobrazi 1 trojuholnik, 6 zobrazi 2, 9 zobrazi 3, 12 zobrazi 4
+
+//var material = new THREE.MeshBasicMaterial( { color: 0xff0000,
+	//	side: THREE.DoubleSide } ); // treba tu side, inac to nezobrazi
+		
+		var material = new THREE.MeshPhongMaterial({color: 0x3399ff,side: THREE.DoubleSide,shading: THREE.FlatShading}); 
+		// MeshPhongMaterial--> nefunguje nic ani farby ani osvetlenie (normaly)--> fungovalo ale stopol som to moc skoro :D
+		//MeshBacisMaterial--> nefunguje osvetlenie, funguju farby
+		//MeshLambertMaterial --> funguje osvetlenie (computeVertexNormals()), aj farby
+	mesh = new THREE.Mesh( geometry2, material );
+	mesh.geometry.computeVertexNormals();
+	scene.add(mesh);
+	
+	// *** AXES ***
+	
+	//var axes = new THREE.AxisHelper();
+	//scene.add(axes);
+ 
+    // ****************************** start GUI ***************************************
+	
+	gui = new dat.GUI();
+	
+	var controlsGUI =
+	{
+		speed: 6,
+		reset: function() { drawCount=0; },
+		//pause: true,
+		stop: function(){drawCount=stopAnimationGUI;}
+	}
+	var animationSpeed = gui.add( controlsGUI, 'speed' ).min(1).max(20).step(1).name('animation speed').listen();
+	animationSpeed.onChange(function(value)
+	{   speedAnimationGUI = value;   });
+	gui.add( controlsGUI, 'reset' ).name("start animation");
+	gui.add( controlsGUI, 'stop' ).name("end and stop");
+	gui.open();
+	
+	// ****************************** end GUI ***************************************
+	
+ 
+
+	 
+
+      // Add OrbitControls so that we can pan around with the mouse.
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+    }
+
+
+    // Renders the scene and updates the render as needed.
+    function animate() {
+	
+	
+	
+	requestAnimationFrame(animate);
+      // Read more about requestAnimationFrame at http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
+      
+      
+	  
+	  // random fast animation
+	  <!-- drawCount = Math.floor(13*Math.random())%13; -->
+	  <!-- console.log(drawCount); -->
+	  
+	  
+	  //@author sagat:  THIS IS BRUTE FORCE SOLUTION, documentation of three.js is not user friendly, i looked for long time without success
+		<!-- if(drawCount<=num_faces*speedAnimation) -->
+		<!-- { -->
+
+
+						<!-- ; -->
+			
+			<!-- if(drawCount==num_faces*speedAnimation) -->
+			<!-- { -->
+				<!-- wait--; -->
+				<!-- if(wait==0) -->
+				<!-- { -->
+					<!-- drawCount=3; -->
+					<!-- wait=MESH_WAIT; -->
+				<!-- } -->
+				
+			<!-- } -->
+			<!-- else -->
+			<!-- { -->
+				<!-- drawCount++ -->
+			<!-- } -->
+			
+			
+			
+			<!-- if(drawCount%speedAnimation==0 && drawCount>=3*speedAnimation) -->
+			<!-- { -->
+				<!-- mesh.geometry.setDrawRange(0,Math.floor(drawCount/speedAnimation)); -->
+			    <!-- console.log("number =" + Math.floor(drawCount/speedAnimation)); -->
+			    <!-- console.log("drawCount%speedAnimation =" + drawCount%speedAnimation); -->
+			<!-- } -->
+			
+
+
+			
+		<!-- } -->
+		<!-- else -->
+		<!-- { -->
+			<!-- drawCount=3; -->
+		<!-- } -->
+		drawCount++;
+		if(drawCount==Math.floor(3*num_faces/speedAnimationGUI)+wait)
+		{
+			drawCount=0;
+		}
+	mesh.geometry.setDrawRange(0,drawCount*speedAnimationGUI);
+	console.log("drawCount = "+drawCount);
+	
+			
+
+
+      
+	  
+	  // Render the scene
+      renderer.render(scene, camera);
+      controls.update();
+	  
+
+    }
+	
+	function emptyFun()
+	{
+		console.log("koniec cakania");
+	}
+	
+	
+
+
+</script>
+</body>
+</html>
