@@ -2,7 +2,6 @@
 
 
 # mariansagat.github.io
-[![build](https://travis-ci.org/iluwatar/java-design-patterns.svg?branch=master)](https://mariansagat.github.io/)
 
 ## This site is about
 * mesh and animation of dumbell:
