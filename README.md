@@ -2,7 +2,7 @@
 
 
 # mariansagat.github.io
-[![Build status](https://mariansagat.github.io/)](https://mariansagat.github.io/)
+[![build](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://mariansagat.github.io/)
 
 ## This site is about
 * mesh and animation of dumbell:
